@@ -1,6 +1,7 @@
 package Android.Appium.BasePage;
 
 import Android.Appium.Clase6.FakerClass;
+import Android.Appium.Clase6.airbnbGlobalVariables;
 import Android.Constants;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
@@ -136,4 +137,8 @@ public class BasePage {
         wait.until(ExpectedConditions.elementToBeClickable(anElement));
 
     }
+    protected airbnbGlobalVariables airbnbGV = new airbnbGlobalVariables();
+    protected List<WebElement> textViewList;
+    protected List<WebElement> buttonList;
+
 }
