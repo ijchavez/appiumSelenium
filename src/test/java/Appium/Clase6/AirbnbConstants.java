@@ -11,5 +11,7 @@ public class AirbnbConstants {
     public static final String GOOGLE_CONSENT_TEXT = "Para continuar, Google compartirá tu nombre, dirección de correo electrónico y foto de perfil con Airbnb." +
                                                      " Antes de usar esta app, consulta su política de privacidad y las condiciones del servicio.";
     public static final List<String> FOOTER_MENU = to.list("Explora", "Favoritos", "Viajes", "Mensajes", "Perfil");
+    public static final String INVALID_TELEPHONE_NUMBER_ERR_MSG = "Número de teléfono inválido";
+    public static final String GERMANY = "Alemania ( +49 )";
 
 }

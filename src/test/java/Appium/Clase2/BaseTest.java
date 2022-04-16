@@ -20,7 +20,7 @@ public class BaseTest extends BasePage {
                         Constants.GENERIC_S10_APP_PATH + Constants.CALCULATOR_APP_PACKAGE + Constants.CALCULATOR_APP_ACTIVITY,
                                     Constants.ANDROID_DEVICE_NAME);
 
-        driver = new AndroidDriver(new URL(appiumServerURL), dc);
+        driver = new AndroidDriver(new URL(Constants.APPIUM_URL), dc);
 
         PageFactory.initElements(driver, this);
         driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
