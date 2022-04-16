@@ -1,4 +1,4 @@
-package Android.Appium.Clase6;
+package Android.Appium.Clase78.Test;
 
 import Android.Appium.BasePage.BasePage;
 import Android.Appium.Utilities.Constants;

@@ -2,6 +2,9 @@ package Android.Appium.BasePage;
 
 import Android.Appium.Clase6.FakerClass;
 import Android.Appium.Clase6.airbnbGlobalVariables;
+import Android.Appium.Clase78.Pages.LandingPage;
+import Android.Appium.Clase78.Pages.LoginPage;
+import Android.Appium.Clase78.Pages.RegistrationPage;
 import Android.Constants;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
@@ -10,6 +13,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
@@ -22,9 +27,20 @@ import java.util.NoSuchElementException;
 
 public class BasePage {
     public static AndroidDriver driver;
+    protected airbnbGlobalVariables airbnbGV = new airbnbGlobalVariables();
+    public LandingPage landingPage;
+    public LoginPage loginPage;
+    public RegistrationPage registrationPage;
 
-    public String appiumServerURL = Constants.APPIUM_URL;
+    public LandingPage startTest(){
+        LandingPage lap = new LandingPage(driver);
+        return lap;
 
+    }
+    public void initElements(){
+        PageFactory.initElements(driver, this);
+
+    }
     public DesiredCapabilities dc = new DesiredCapabilities();
     public DesiredCapabilities getDesiredCapabilities(String anAndroidDevice, String anAndroidVersion, String anAppPackage,
                                                       String anAppActivity, String aDeviceName){
@@ -42,11 +58,30 @@ public class BasePage {
     public FakerClass fkr = new FakerClass();
 
     public List<WebElement> getElementsByClassName(String aLocator){
-        return driver.findElements(By.className(aLocator));
+        List<WebElement> listToReturn = driver.findElements(By.className(aLocator));
+        return listToReturn;
+
+    }
+    @FindBy(className = Android.Appium.Utilities.Constants.ANDROID_WIDGET_TEXTVIEW)
+    List<WebElement> androidWidgetTextView;
+    public List<WebElement> getAndroidWidgetTextView(){
+        return androidWidgetTextView;
+
+    }
+    @FindBy(className = Android.Appium.Utilities.Constants.ANDROID_WIDGET_BUTTON)
+    List<WebElement> androidWidgetButton;
+    public List<WebElement> getAndroidWidgetButton(){
+        return androidWidgetButton;
 
     }
     public WebElement getElementByClassName(String aLocator){
         return driver.findElement(By.className(aLocator));
+
+    }
+    @FindBy(className = Android.Appium.Utilities.Constants.ANDROID_WIDGET_EDITTEXT)
+    WebElement androidWidgetEditText;
+    public WebElement getAndroidWidgetEditText(){
+        return androidWidgetEditText;
 
     }
     public WebElement getElementByAccessibilityId(String aLocator){
@@ -54,8 +89,11 @@ public class BasePage {
 
     }
     public List<WebElement> getListOfWebElementsById(String aLocator){
-        Assert.assertFalse(driver.findElements(By.id(aLocator)).isEmpty());
-        return driver.findElements(By.id(aLocator));
+        List<WebElement> listToReturn = driver.findElements(By.id(aLocator));
+
+        this.waitForAListOfWebElementsToFullyLoad(listToReturn, 30, 3);
+        Assert.assertFalse(listToReturn.isEmpty());
+        return listToReturn;
 
     }
     public WebElement getAWebElementById(String aLocator){
@@ -127,17 +165,45 @@ public class BasePage {
         return wait;
 
     }
-    public void waitForAWebElementToHaveCertainText(WebElement anElement, String aTextToWait){
-        wait = getWaitElement(30, 3);
+    public void waitForAWebElementToHaveCertainText(WebElement anElement, String aTextToWait, int aWithTimeOut, int aPollingEvery){
+        wait = getWaitElement(aWithTimeOut, aPollingEvery);
         wait.until(ExpectedConditions.textToBePresentInElement(anElement, aTextToWait));
 
     }
-    public void waitForAWebElementToBeClickable(WebElement anElement){
-        wait = getWaitElement(30, 3);
+    public void waitForAWebElementToBeClickable(WebElement anElement, int aWithTimeOut, int aPollingEvery){
+        wait = getWaitElement(aWithTimeOut, aPollingEvery);
         wait.until(ExpectedConditions.elementToBeClickable(anElement));
 
     }
-    protected airbnbGlobalVariables airbnbGV = new airbnbGlobalVariables();
+    public void waitForAListOfWebElementsToFullyLoad(List<WebElement> aListOfWebElements, int aWithTimeOut, int aPollingEvery){
+        wait = getWaitElement(aWithTimeOut, aPollingEvery);
+        wait.until(ExpectedConditions.visibilityOfAllElements(aListOfWebElements));
+
+    }
+    public void waitForAWebElementToFullyLoad(WebElement aWebElement, int aWithTimeOut, int aPollingEvery){
+        wait = getWaitElement(aWithTimeOut, aPollingEvery);
+        wait.until(ExpectedConditions.visibilityOf(aWebElement));
+
+    }
+    public void sendKeysToAWebElement(WebElement anElement, String aKeysToSend){
+        anElement.sendKeys(aKeysToSend
+        );
+    }
+    public boolean isWebElementEnabled(WebElement aWebElement){
+        boolean isEnabled = aWebElement.isEnabled();
+        return isEnabled;
+
+    }
+    public boolean isWebElementDisplayed(WebElement aWebElement){
+        boolean isDisplayed = aWebElement.isDisplayed();
+        return isDisplayed;
+
+    }
+    public WebElement getAWebElementFromList(List<WebElement> aListOfWebElements, int pos){
+        WebElement aWebElement = aListOfWebElements.get(pos);
+        return aWebElement;
+
+    }
     protected List<WebElement> textViewList;
     protected List<WebElement> buttonList;
 

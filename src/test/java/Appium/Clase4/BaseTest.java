@@ -19,7 +19,7 @@ public class BaseTest extends BasePage {
     public void setUp() throws MalformedURLException {
         dc = getDesiredCapabilities(Constants.ANDROID_DEVICE, Constants.ANDROID_12_VERSION, Constants.API_DEMOS_APP_PACKAGE,
                         Constants.API_DEMOS_APP_PACKAGE + Constants.API_DEMOS_APP_ACTIVITY, Constants.ANDROID_DEVICE_NAME);
-        driver = this.instanciateAppium(appiumServerURL, dc);
+        driver = this.instanciateAppium(Constants.APPIUM_URL, dc);
 
         PageFactory.initElements(driver, this);
         this.implicitWait(driver, 15);

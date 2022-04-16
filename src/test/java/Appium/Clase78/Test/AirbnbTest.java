@@ -1,5 +1,8 @@
-package Android.Appium.Clase6;
+package Android.Appium.Clase78.Test;
 
+import Android.Appium.Clase6.AirbnbConstants;
+import Android.Appium.Clase6.BaseTest;
+import Android.Appium.Utilities.AssertionErrorMessages;
 import Android.Appium.Utilities.Constants;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
@@ -11,22 +14,23 @@ import java.util.List;
 
 public class AirbnbTest extends BaseTest {
 
-
     @Test
     public void airbnbTest(){
-        textViewList = getElementsByClassName(Constants.ANDROID_WIDGET_TEXTVIEW);
-        printAListOfWebElements(textViewList);
+        textViewList = landingPage.getAndroidWidgetTextView();
+        landingPage.printAListOfWebElements(textViewList);
 
     }
     @Test
     public void clickOnAParticularCountryTest(){
-        textViewList = getElementsByClassName(Constants.ANDROID_WIDGET_TEXTVIEW);
-        textViewList.get(1).click();
+        textViewList = landingPage.getAndroidWidgetTextView();
 
-        textViewList = getElementsByClassName(Constants.ANDROID_WIDGET_TEXTVIEW);
-        printAListOfWebElements(textViewList);
+        WebElement countryOptionList = textViewList.get(1);
+        countryOptionList.click();
 
-        List<WebElement> countriesList = getListOfWebElementsById("android:id/text1");
+        textViewList = landingPage.getAndroidWidgetTextView();
+        landingPage.printAListOfWebElements(textViewList);
+
+        List<WebElement> countriesList = landingPage.getListOfWebElementsById(Constants.ANDROID_ID + Constants.TEXT1);
         for(WebElement country : countriesList){
             if(country.getText().contains("Alemania ( +49 )")){
                 country.click();
@@ -35,24 +39,32 @@ public class AirbnbTest extends BaseTest {
             }
 
         }
-        textViewList = getElementsByClassName(Constants.ANDROID_WIDGET_TEXTVIEW);
-        printAListOfWebElements(textViewList);
+        textViewList = landingPage.getAndroidWidgetTextView();
+        landingPage.printAListOfWebElements(textViewList);
 
-        Assert.assertEquals(textViewList.get(2).getText(), "Alemania ( +49 )", "el mensaje de error no es correcto o no aparece");
+        WebElement countrySelected = textViewList.get(2);
+        String countrySelectedText = landingPage.getTextFromAWebElement(countrySelected);
+
+        Assert.assertEquals(countrySelectedText, "Alemania ( +49 )", AssertionErrorMessages.MESSAGE_NOT_SHOWN);
     }
     @Test
     public void invalidPhoneTest(){
-        WebElement telephone = getElementByClassName(Constants.ANDROID_WIDGET_EDITTEXT);
+        WebElement telephone = landingPage.getAndroidWidgetEditText();
         telephone.sendKeys("123123");
 
-        textViewList = getElementsByClassName(Constants.ANDROID_WIDGET_TEXTVIEW);
-        Assert.assertEquals(textViewList.get(3).getText(), "Número de teléfono inválido", "el mensaje de error no es correcto o no aparece");
+        textViewList = landingPage.getAndroidWidgetTextView();
+
+        WebElement invalidPhoneErrMsg = textViewList.get(3);
+        String invalidPhoneErrMsgText = landingPage.getTextFromAWebElement(invalidPhoneErrMsg);
+
+        System.out.println(invalidPhoneErrMsgText);
+        Assert.assertEquals(invalidPhoneErrMsgText, AirbnbConstants.INVALID_TELEPHONE_NUMBER_ERR_MSG, AssertionErrorMessages.MESSAGE_NOT_SHOWN);
 
     }
     @Test
     public void buttonListLoginTest(){
-        buttonList = getElementsByClassName(Constants.ANDROID_WIDGET_BUTTON);
-        printAListOfWebElements(buttonList);
+        buttonList = landingPage.getAndroidWidgetButton();
+        landingPage.printAListOfWebElements(buttonList);
 
         airbnbGV.enabledButtonList = new ArrayList<WebElement>();
         airbnbGV.disabledButtonList = new ArrayList<WebElement>();
@@ -74,46 +86,47 @@ public class AirbnbTest extends BaseTest {
     }
     @Test
     public void invalidEmailTest(){
-        buttonList = getElementsByClassName(Constants.ANDROID_WIDGET_BUTTON);
-        printAListOfWebElements(buttonList);
+        buttonList = landingPage.getAndroidWidgetButton();
+        landingPage.printAListOfWebElements(buttonList);
 
-        airbnbGV.loginWithMail = buttonList.get(1);
-        airbnbGV.loginWithMail.click();
+        loginPage = landingPage.clickOnEmailBtn();
 
-        airbnbGV.email = getElementByClassName(Constants.ANDROID_WIDGET_EDITTEXT);
-        airbnbGV.email.sendKeys("qqqqqqq");
+        airbnbGV.email = loginPage.getAndroidWidgetEditText();
+        loginPage.sendKeysToAWebElement(airbnbGV.email, "qqqqqq");
 
-        buttonList = getElementsByClassName(Constants.ANDROID_WIDGET_BUTTON);
+        buttonList = loginPage.getAndroidWidgetButton();
 
         airbnbGV.continueButtonInLoginWithEmail = buttonList.get(0);
-        Assert.assertFalse(airbnbGV.continueButtonInLoginWithEmail.isEnabled(), "El botón debería estár deshabilitado");
-
-
+        Assert.assertFalse(loginPage.isWebElementEnabled(airbnbGV.continueButtonInLoginWithEmail), AssertionErrorMessages.BUTTON_DISABLED);
 
     }
     @Test
     public void createPasswordTest(){
-        buttonList = getElementsByClassName(Constants.ANDROID_WIDGET_BUTTON);
-        printAListOfWebElements(buttonList);
+        buttonList = landingPage.getAndroidWidgetButton();
+        landingPage.printAListOfWebElements(buttonList);
 
         airbnbGV.continueBtn = buttonList.get(0);
-        Assert.assertFalse(airbnbGV.continueBtn.isEnabled(), "El botón debería estár deshabilitado");
+        Assert.assertFalse(landingPage.isWebElementEnabled(airbnbGV.continueBtn), AssertionErrorMessages.BUTTON_DISABLED);
 
-        airbnbGV.loginWithMail = buttonList.get(1);
-        airbnbGV.loginWithMail.click();
+        loginPage = landingPage.clickOnEmailBtn();
 
-        String fakeEmail = fkr.getFakerEmail();
+        airbnbGV.fakerEmail = fkr.getFakerEmail();
 
-        airbnbGV.email = getElementByClassName(Constants.ANDROID_WIDGET_EDITTEXT);
-        airbnbGV.email.sendKeys(fakeEmail);
+        airbnbGV.email = loginPage.getAndroidWidgetEditText();
+        airbnbGV.email.sendKeys(airbnbGV.fakerEmail);
 
-        buttonList = getElementsByClassName(Constants.ANDROID_WIDGET_BUTTON);
+        buttonList = loginPage.getAndroidWidgetButton();
+
         airbnbGV.continueButtonInLoginWithEmail = buttonList.get(0);
+        Assert.assertTrue(loginPage.isWebElementEnabled(airbnbGV.continueButtonInLoginWithEmail), AssertionErrorMessages.BUTTON_ENABLED);
 
-        Assert.assertTrue(airbnbGV.continueButtonInLoginWithEmail.isEnabled(), "El botón debería estár habilitado");
-        airbnbGV.continueButtonInLoginWithEmail.click();
+        registrationPage = loginPage.clickOnContinueToRegPage();
 
-        Assert.assertFalse(airbnbGV.continueButtonInLoginWithEmail.isDisplayed(), "El botón debería estár habilitado");
+        buttonList = registrationPage.getAndroidWidgetButton();
+        waitForAListOfWebElementsToFullyLoad(buttonList, 30, 3);
+
+        WebElement acceptAndContinueBtn = buttonList.get(0);
+        Assert.assertFalse(registrationPage.isWebElementEnabled(acceptAndContinueBtn), AssertionErrorMessages.BUTTON_DISABLED);
 
         /*
           Si completo la contraseña el botón aceptar y continuar sigue deshabilitado porque falta el nombre.
@@ -122,44 +135,44 @@ public class AirbnbTest extends BaseTest {
     }
     @Test
     public void googleLoginTest() throws InterruptedException {
-        buttonList = getElementsByClassName(Constants.ANDROID_WIDGET_BUTTON);
-        printAListOfWebElements(buttonList);
+        buttonList = landingPage.getAndroidWidgetButton();
+        landingPage.printAListOfWebElements(buttonList);
 
         WebElement continueWithGoogle = buttonList.get(3);
         continueWithGoogle.click();
 
-        WebElement googleLoginTitle = getAWebElementById(Constants.AIRBNB_GMSID + "main_title");
-        String googleLoginTitleText = getTextFromAWebElement(googleLoginTitle);
+        WebElement googleLoginTitle = landingPage.getAWebElementById(Constants.AIRBNB_GMSID + "main_title");
+        String googleLoginTitleText = landingPage.getTextFromAWebElement(googleLoginTitle);
 
-        Assert.assertEquals(googleLoginTitleText, AirbnbConstants.CHOOSE_AN_ACCOUNT, "El texto no coincide");
+        Assert.assertEquals(googleLoginTitleText, AirbnbConstants.CHOOSE_AN_ACCOUNT, AssertionErrorMessages.TEXT_MISMATCH);
 
-        WebElement googleLoginSubTitle = getAWebElementById( Constants.AIRBNB_GMSID + "subtitle");
-        String googleLoginSubTitleText = getTextFromAWebElement(googleLoginSubTitle);
+        WebElement googleLoginSubTitle = landingPage.getAWebElementById( Constants.AIRBNB_GMSID + "subtitle");
+        String googleLoginSubTitleText = landingPage.getTextFromAWebElement(googleLoginSubTitle);
 
-        Assert.assertEquals(googleLoginSubTitleText, AirbnbConstants.TO_CONTINUE_USING_AIRBNB, "El texto no coincide");
+        Assert.assertEquals(googleLoginSubTitleText, AirbnbConstants.TO_CONTINUE_USING_AIRBNB, AssertionErrorMessages.TEXT_MISMATCH);
 
-        WebElement addAnotherAccount = getAWebElementById(Constants.AIRBNB_GMSID + "add_account_chip_title");
-        String anotherAccountText = getTextFromAWebElement(addAnotherAccount);
+        WebElement addAnotherAccount = landingPage.getAWebElementById(Constants.AIRBNB_GMSID + "add_account_chip_title");
+        String anotherAccountText = landingPage.getTextFromAWebElement(addAnotherAccount);
 
-        Assert.assertEquals(anotherAccountText, AirbnbConstants.ADD_ANOTHER_ACCOUNT, "El texto no coincide");
+        Assert.assertEquals(anotherAccountText, AirbnbConstants.ADD_ANOTHER_ACCOUNT, AssertionErrorMessages.TEXT_MISMATCH);
 
-        WebElement consentText = getAWebElementById(Constants.AIRBNB_GMSID + "consent_text");
-        String consentTextText = getTextFromAWebElement(consentText);
+        WebElement consentText = landingPage.getAWebElementById(Constants.AIRBNB_GMSID + "consent_text");
+        String consentTextText = landingPage.getTextFromAWebElement(consentText);
 
-        Assert.assertEquals(consentTextText, AirbnbConstants.GOOGLE_CONSENT_TEXT, "El texto no coincide");
+        Assert.assertEquals(consentTextText, AirbnbConstants.GOOGLE_CONSENT_TEXT, AssertionErrorMessages.TEXT_MISMATCH);
 
-        WebElement choosedAccount = getAWebElementById(Constants.AIRBNB_GMSID + "account_display_name");
+        WebElement choosedAccount = landingPage.getAWebElementById(Constants.AIRBNB_GMSID + "account_display_name");
         choosedAccount.click();
 
         Thread.sleep(10000);
+        textViewList = landingPage.getAndroidWidgetTextView();
 
-        textViewList = getElementsByClassName(Constants.ANDROID_WIDGET_TEXTVIEW);
-        List<String> textViewListText = getTextFromAListOfWebElements(textViewList);
-        printAListOfWebElements(textViewList);
+        List<String> textViewListText = landingPage.getTextFromAListOfWebElements(textViewList);
+        landingPage.printAListOfWebElements(textViewList);
 
         for(int i = 0; i < 5; i++){
             waitForAWebElementToHaveCertainText(textViewList.get(i), AirbnbConstants.FOOTER_MENU.get(i), 30, 3);
-            Assert.assertEquals(textViewListText.get(i), AirbnbConstants.FOOTER_MENU.get(i), "El texto no coincide");
+            Assert.assertEquals(textViewListText.get(i), AirbnbConstants.FOOTER_MENU.get(i), AssertionErrorMessages.TEXT_MISMATCH);
 
         }
 

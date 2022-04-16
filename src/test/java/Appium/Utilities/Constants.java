@@ -50,5 +50,5 @@ public class Constants {
     public static final String AIRBNB_APP_PACKAGE = "com.airbnb.android";
     public static final String AIRBNB_APP_ACTIVITY = ".feat.homescreen.HomeActivity";
     public static final String AIRBNB_GMSID = "com.google.android.gms:id/";
-    
+
 }

@@ -17,5 +17,9 @@ public class airbnbGlobalVariables {
     public WebElement email;
     public WebElement continueButtonInLoginWithEmail;
 
-    List<WebElement> editTextList;
+    public List<WebElement> editTextList;
+
+    public WebElement emailField;
+    public String fakerEmail = "";
+
 }
